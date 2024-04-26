@@ -1,0 +1,237 @@
+{% include 'index.html' %}
+{% load static %}
+{% load custom_tags %}
+{% block body %}
+
+
+<link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Voting Status</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">status</li>
+          </ol>
+        </div><!-- /.col -->
+        
+      </div><!-- /.row -->
+      
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <div class="content">
+    <div class="container-fluid">
+
+      <div class="row">
+
+        <div class="col-md-6 mb-4">
+            <label>Election Area Code</label>
+            <select class="js-example-disabled-results" id="select" style="width: 100%;height:50px;margin-bottom:10%">
+              {% for i in areadata %}
+                <option value="{{i.id}}" {% if request.GET.areacode == i.id|changestr %}selected="selected"{% endif %}>{{i.code}} [{{i.title}}]</option>
+              {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-6 mb-4">
+          <label>Election Type</label>
+          <select class="js-example-disabled-results" id="electtype" style="width: 100%;height:50px;margin-bottom:10%">
+            {% for i in typedata %}
+              <option value="{{i.id}}" {% if request.GET.electtype == i.id|changestr %}selected="selected"{% endif %}>{{i.name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+      </div>
+      
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-header border-0">
+              <div class="d-flex justify-content-between">
+                <h2 class="card-title">Voting Status</h2>
+                <a href="/reset-voting?areacode={{request.GET.areacode}}&electtype={{request.GET.electtype}}" class="btn btn-success" onclick="return confirm('Are you sure to reset voting?')">Reset Voting</a>
+                {% if status.status == 2 %}
+                  <a href="/startstopvoting?areacode={{request.GET.areacode}}&electtype={{request.GET.electtype}}" onclick="return confirm('Are you sure to start voting?')" class="btn btn-primary">Start Voting</a>
+                {% else %}
+                  {% if status.status == 3 %}
+                  {% else %}
+                    <a href="/winner-announced?areacode={{request.GET.areacode}}&electtype={{request.GET.electtype}}" class="btn btn-info" onclick="return confirm('Are you sure to announce winner?')">Winner Announced</a>
+                    <a href="/startstopvoting?areacode={{request.GET.areacode}}&electtype={{request.GET.electtype}}" class="btn btn-danger" onclick="return confirm('Are you sure to stop voting?')">Stop Voting</a>
+                  {% endif %}
+                {% endif %}
+                  
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- /.d-flex -->
+
+              <div class="position-relative mb-4">
+                {% if  status.status == 1 %}
+                <div id="chartContainer" style="height: 300px; width: 100%;">
+                </div>
+                     
+                {% elif status.status == 3 %}
+                      <h2 align="center">Winner is "{{winner.candidate.fname}} {{winner.candidate.lname}}"</h2>
+                {% else %}
+                <h2 align="center">Graph is not available</h2>
+                <h4 align="center">Soon data will be available when election process is started.</h4>
+                {% endif %}
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <!-- /.d-flex -->
+
+              <div class="card">
+                <div class="card-header">
+                  <h1 class="card-title" style="font-weight:bold">Remaining Voter</h1>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <table id="example1" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Image</th>
+                      <th>Email</th>
+                      <th>Date of Birth</th>
+                      <th>Mobile</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      {% for i in data %}
+                    <tr>
+                      <td>{{forloop.counter}}</td>
+                      <td>{{i.user.first_name}} {{i.user.last_name}}</td>
+                      <td><img src="{{i.image.url}}" style="width:80px"></td>
+                      <td>{{i.user.email}}</td>
+                      <td>{{i.dob}}</td>
+                      <td>
+                        {{i.mobile}}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                    
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.card-body -->
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </div>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+  <script type="text/javascript">
+  var  myval = {{graphdata|safe}};
+  window.onload = function () {
+    var chart = new CanvasJS.Chart("chartContainer", {
+
+      title:{
+        text: "Counting of Vote"              
+      },
+      data: [
+        {
+         type: "column",
+         dataPoints: myval
+       }
+       ]
+     });
+
+    chart.render();
+  }
+  </script>
+  <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+  <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+  <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+  <script src="{% static 'plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'plugins/jszip/jszip.min.js' %}"></script>
+  <script src="{% static 'plugins/pdfmake/pdfmake.min.js' %}"></script>
+  <script src="{% static 'plugins/pdfmake/vfs_fonts.js' %}"></script>
+  <script src="{% static 'plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+  <script src="{% static 'plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+  <script src="{% static 'plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+  <script>
+    $(function () {
+      $("#example1").DataTable({
+        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      $('#example2').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+      });
+    });
+
+    $('.select2').select2()
+
+    //Initialize Select2 Elements
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
+
+    var $disabledResults = $(".js-example-disabled-results");
+    $disabledResults.select2();
+
+    $('#select').change(function(){
+        var eid = document.getElementById('select').value;
+        var tid = document.getElementById('electtype').value;
+        window.location = "/voting-status?areacode="+eid+"&electtype="+tid;
+    })
+
+    $('#electtype').change(function(){
+        var eid = document.getElementById('select').value;
+        var tid = document.getElementById('electtype').value;
+        window.location = "/voting-status?areacode="+eid+"&electtype="+tid;
+    })
+    
+  </script>
+
+ 
+{% include 'footer.html' %}
+{% endblock  %}

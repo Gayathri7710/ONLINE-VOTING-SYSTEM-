@@ -1,0 +1,127 @@
+{% extends 'user_home.html' %}
+{% load static %}
+{% block body %}
+<br>
+<br>
+
+         
+<div class="container">
+    <h4 class="page-title">User Profile</h4>
+    <hr><div class="row">
+        <div class="col-md-6">
+            <strong>Full Name:</strong>
+        </div>
+        <div class="col-md-6">
+            {{pro.user.first_name}} {{pro.user.last_name}}
+        </div>
+    </div><hr>
+     <div class="row">
+        <div class="col-md-6">
+            <strong>Customer Pic:</strong>
+        </div>
+        <div class="col-md-6">
+           <img src="{{pro.image.url}}" style="width:150px;height:150px">
+        </div>
+
+    </div><hr>
+    <div class="row">
+        <div class="col-md-6">
+            <strong>Email Id :</strong>
+        </div>
+        <div class="col-md-6">
+            {{pro.user.email}}
+        </div>
+    </div><hr>
+     <div class="row">
+        <div class="col-md-6">
+            <strong>Contact :</strong>
+        </div>
+        <div class="col-md-6">
+            {{pro.mobile}}
+        </div>
+     </div><hr>
+    <div class="row">
+        <div class="col-md-6">
+            <strong>Date of Birth :</strong>
+        </div>
+        <div class="col-md-6">
+            {{pro.dob}}
+        </div>
+    </div><hr>
+    <div class="row">
+        <div class="col-md-6">
+            <strong>Address :</strong>
+        </div>
+        <div class="col-md-6">
+            {{pro.address}}
+        </div>
+    </div><hr>
+
+
+    <h4>Additional Detail</h4><hr>
+    <div class="row">
+        <div class="col-md-6">
+            <strong>Aadhar Card :</strong>
+        </div>
+        <div class="col-md-6">
+            {% if pro.adharimage %}
+                Uploaded
+            {% else %}
+            Not Uploaded
+            {% endif %}
+        </div>
+    </div><hr>
+
+   
+    <div class="row">
+        <div class="col-md-6">
+            <strong>Aadhar number :</strong>
+        </div>
+        <div class="col-md-6">
+            {{pro.adharno}}
+        </div>
+    </div><hr>
+
+
+    <div class="row">
+        <div class="col-md-6">
+            <strong>Email Verification :</strong>
+        </div>
+        <div class="col-md-6">
+            {% if pro.emailstatus == 1 %}
+                Verified
+            {% else %}
+                Pending
+                
+                    <button class="btn btn-success" style="margin-left:120px" onclick="sentotp()">click to verify</button>
+                
+            {% endif %}
+        </div>
+    </div><hr>
+
+
+
+
+    {% comment %} {% if request.user.id == pro.user.id %}
+        <a href=""><button class="btn btn-primary" style="width:100%;margin-bottom:5%">Edit Profile</button></a>
+    {% endif %} {% endcomment %}
+</div>
+
+
+<script>
+    function sentotp(){
+        var xhttp;    
+        var bid_id = "{{pro.id}}";
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                data = JSON.parse(this.responseText);
+                alert("OTP sent.");
+                window.location = "/email-verify/"+bid_id;
+            }
+        };
+        xhttp.open("GET", "/generateotp/"+bid_id, true);
+        xhttp.send();
+    }
+</script>
+{% endblock %}

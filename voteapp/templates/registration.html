@@ -1,0 +1,138 @@
+{% extends 'user_home.html' %}
+{% block body %}
+<style>
+  footer {
+    background-color: black;
+    color: #fff;
+    padding: 32px;
+  }
+  footer a {
+    color: #fff;
+  }
+  footer a:hover {
+    color: #777;
+    text-decoration: none;
+  }  
+</style>
+
+
+<!-- Container (Contact Section) -->
+<div id="contact" class="container-fluid" style="margin-top:5%">
+  <h3 class="text-center">Registration</h3><hr>
+  <p class="text-center"><em>we never share your detail.!</em></p>
+<form action="" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="row">
+        <div class="col-sm-6 form-group">
+          <input class="form-control" id="fname" name="fname" placeholder="First name" type="text" required>
+        </div>
+        <div class="col-sm-6 form-group">
+          <input class="form-control" id="lname" name="lname" placeholder="Last name" type="text" required>
+        </div>
+        <div class="col-sm-6 form-group">          
+          <input class="form-control" id="email"  name="email" placeholder="Enter Email" type="email" style="width:100%" required>
+        </div>
+
+        {% comment %} <div class="col-sm-3 form-group">
+          <button type="button" class="pull-right" onclick="verifyemail()" id="verify" style="width:10%;height:34px;padding:2px;">Verify</button>
+          <button type="button" class="pull-right" onclick="sentotp()" id="sendotp" style="width:10%;height:34px;padding:2px;">Send OTP</button>
+          <input class="form-control" id="otp" name="otp" placeholder="Enter OTP" type="text" style="width:80%" required>
+        </div> {% endcomment %}
+
+        <div class="col-sm-6 form-group">
+          <input class="form-control" id="pwd" name="pwd" placeholder="Enter Password" type="password" required>
+        </div>
+        <div class="col-sm-6 form-group">
+          <input class="form-control" id="cpwd" name="cpwd" placeholder="Enter Confirm Password" type="password" required>
+        </div>
+
+        <div class="col-sm-6 form-group">
+          <input class="form-control" id="adharno" name="adharno" placeholder="Enter Aadhar Number" type="text" max_length="12" min_length="12" required>
+          
+        </div>
+
+        <div class="col-sm-6 form-group">
+          <input class="form-control" id="mobile" name="mobile" placeholder="Enter Mobile no." type="number" required>
+        </div>
+
+        <div class="col-sm-6 form-group">
+          <input class="form-control" id="city" name="city" placeholder="Enter City name" type="text" required>
+        </div>
+
+        <div class="col-sm-6 form-group">
+          <input class="form-control" id="state" name="state" placeholder="Enter State name" type="text" required>
+        </div>
+
+        <div class="col-sm-6 form-group">
+          <input class="form-control" id="zipcode" name="zipcode" placeholder="Enter Zipcode" type="text" required>
+        </div>
+
+        <div class="col-sm-6 form-group">
+          <label>Your Image</label>
+          <input class="form-control" id="image" name="image" placeholder="Enter Image" type="file" required>
+        </div>
+
+        <div class="col-sm-6 form-group">
+          <label>Aadhar Image</label>
+          <input class="form-control" id="adharimage" name="adharimage" placeholder="Enter Aadhar Image" type="file" required>
+        </div>
+
+      </div>
+      <label>Date of birth</label>
+      <input class="form-control" id="dob" name="dob" placeholder="Enter Your Date of Birth" type="date" required>
+      <br>
+      <textarea class="form-control" id="city" name="address" placeholder="Enter Your Address" rows="5"></textarea>
+      <br>
+      <div class="row">
+        <div class="col-md-12 form-group">
+          <button class="btn pull-right" type="submit">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  
+</div>
+
+<script>
+
+
+  function sentotp(){
+      var xhttp;    
+      var bid_id = document.getElementById('email').value;
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+              data = JSON.parse(this.responseText);
+              alert("OTP sent.");
+              document.getElementById('sendotp').innerHTML = "Resend";
+              document.getElementById('sendotp').innerHTML = "Resend";
+          }
+      };
+      xhttp.open("GET", "/generateotpbefore/?email="+bid_id, true);
+      xhttp.send();
+  }
+
+</script>
+
+<script>
+
+
+  function verifyemail(){
+      var xhttp;    
+      var bid_id = "{{pid}}";
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+              data = JSON.parse(this.responseText);
+              alert("OTP sent.");
+              window.location = "/dashboard";
+          }
+      };
+      xhttp.open("GET", "/verifyemail/", true);
+      xhttp.send();
+  }
+
+</script>
+
+{% endblock %}

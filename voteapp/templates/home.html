@@ -1,0 +1,144 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load custom_tags %}
+{% block body %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Dashboard</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+            
+          </ol>
+          
+        </div><!-- /.col -->
+        
+      </div><!-- /.row -->
+      
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <div class="content">
+    <div class="container-fluid">
+      
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header border-0">
+              <div class="d-flex justify-content-between">
+                <h2 class="card-title">Total Voters</h2>
+                <a href="voter-reports">View Report</a>
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- /.d-flex -->
+
+              <h1 style="font-weight:bold">Total Voters
+                <span style="font-weight:bold;margin-left:50%" align="right">{{voters}}</span>
+              </h1>
+              
+
+            </div>
+          </div>
+
+
+          <div class="card">
+            <div class="card-header border-0">
+              <div class="d-flex justify-content-between">
+                <h3 class="card-title">Total Candidate</h3>
+                <a href="/candidate-reports">View Report</a>
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- /.d-flex -->
+
+              <h1 style="font-weight:bold">Total Candidate
+                <span style="font-weight:bold;margin-left:40%" align="right">{{candidate}}</span>
+              </h1>
+
+            </div>
+          </div>
+        </div>
+        <!-- /.col-md-6 -->
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header border-0">
+              <div class="d-flex justify-content-between">
+                <h3 class="card-title">Total Election Type</h3>
+                <a href="/electiontype-reports">View Report</a>
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- /.d-flex -->
+
+              <h1 style="font-weight:bold">Total Election Type
+                <span style="font-weight:bold;margin-left:30%" align="right">{{electiontype}}</span>
+              </h1>
+
+            </div>
+          </div>
+
+
+          <div class="card">
+            <div class="card-header border-0">
+              <div class="d-flex justify-content-between">
+                <h3 class="card-title">Total Election Area</h3>
+                <a href="/electionarea-reports">View Report</a>
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- /.d-flex -->
+
+              <h1 style="font-weight:bold">Total Election Area
+                <span style="font-weight:bold;margin-left:30%" align="right">{{electionarea}}</span>
+              </h1>
+
+            </div>
+          </div>
+          <!-- /.card -->
+
+        </div>
+
+
+       <!-- <div class="col-lg-12">
+
+        <div class="card">
+            <div class="card-header border-0">
+              <div class="d-flex justify-content-between">
+                <h3 class="card-title">Next Election Date</h3>
+                <a href="javascript:void(0);">View Report</a>
+              </div>
+            </div>
+            <div class="card-body">
+
+
+              <h1 style="font-weight:bold">06, August 2022
+                
+              </h1>
+
+            </div>
+          </div>
+
+
+        </div>-->
+        <!-- /.col-md-6 -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </div>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+{% endblock  %}
